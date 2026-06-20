@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harshit Tandon | Wearable AI Researcher & Software Engineer</title>
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM UMD -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Babel for JSX Compilation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Premium Typography: Playfair Display, Plus Jakarta Sans, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #030303;
+      color: #fafafa;
+      overflow-x: hidden;
+    }
+    
+    .font-serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    
+    .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Glassmorphism Styles */
+    .glass-panel {
+      background: rgba(10, 10, 12, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-panel-hover:hover {
+      background: rgba(16, 16, 22, 0.85);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.08);
+      transform: translateY(-3px);
+    }
+
+    /* Cyber grid overlay */
+    .cyber-grid {
+      background-size: 40px 40px;
+      background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    }
+
+    .radial-glow {
+      background: radial-gradient(circle 800px at 50% 200px, rgba(120, 119, 198, 0.06), transparent);
+    }
+
+    /* Glowing gradient animations */
+    .gradient-glow {
+      background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #10b981 100%);
+      background-size: 200% 200%;
+      animation: gradient-shift 10s ease infinite;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .pulse-slow {
+      animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.25; }
+    }
+
+    /* Premium outline border glow */
+    .glow-card {
+      position: relative;
+    }
+    .glow-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(to bottom right, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030303;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #333;
+    }
+
+    /* Pulse active dot */
+    .live-dot {
+      position: relative;
+    }
+    .live-dot::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+      animation: ripple 1.6s infinite ease-out;
+      top: 0;
+      left: 0;
+      opacity: 0.8;
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(2.8); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-[#030303] selection:bg-purple-500/20 selection:text-white">
+
+  <div id="root"></div>
+
+  <!-- Load Dynamic Portfolio Config Data -->
+  <script src="data/portfolio-static.js"></script>
+
+  <!-- React Code with Babel Compilation -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // SVG Icons
+    const Icons = {
+      Cpu: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 15h3"/><path d="M1 9h3"/><path d="M1 15h3"/></svg>
+      ),
+      Activity: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0L6.41 10.54A2 2 0 0 1 4.48 12H2"/></svg>
+      ),
+      Sparkles: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+      ),
+      Smartphone: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+      ),
+      ArrowUpRight: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+      ),
+      Github: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+      ),
+      Linkedin: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+      ),
+      Mail: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      ),
+      MapPin: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      ),
+      Calendar: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+      ),
+      Clock: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      ),
+      Award: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
+      ),
+      FileText: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+      ),
+      Trophy: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/><path d="M12 2a7.7 7.7 0 0 1 7.54 8H4.46A7.7 7.7 0 0 1 12 2Z"/></svg>
+      ),
+      Send: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      ),
+      CheckCircle: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+      ),
+      Brain: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1 0-3.12 3 3 0 0 1 0-3.88 2.5 2.5 0 0 1 0-3.12A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 0-3.12 3 3 0 0 0 0-3.88 2.5 2.5 0 0 0 0-3.12A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+      ),
+      ShieldCheck: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6v7z"/><path d="m9 12 2 2 4-4"/></svg>
+      ),
+      Menu: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      ),
+      X: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      ),
+      Terminal: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+      ),
+      Cloud: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.47 0-.89.09-1.25.26a5 5 0 1 0-8.75 3.74A3.5 3.5 0 0 0 9.5 19H17.5Z"/></svg>
+      ),
+      Heart: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      ),
+      Database: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+      ),
+      Shield: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      ),
+      Award: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
+      )
+    };
+
+    const getIcon = (iconName) => {
+      const match = {
+        brain: <Icons.Brain />,
+        activity: <Icons.Activity />,
+        shield: <Icons.Shield />,
+        database: <Icons.Database />,
+        cpu: <Icons.Cpu />,
+        smartphone: <Icons.Smartphone />,
+        terminal: <Icons.Terminal />,
+        cloud: <Icons.Cloud />,
+        fileText: <Icons.FileText />,
+        award: <Icons.Award />,
+        trophy: <Icons.Trophy />
+      };
+      return match[iconName] || <Icons.Cpu />;
+    };
+
+    // Navbar Component
+    function Navbar({ profile }) {
+      const [isOpen, setIsOpen] = useState(false);
+      const [scrolled, setScrolled] = useState(false);
+      const [activeSection, setActiveSection] = useState("hero");
+
+      useEffect(() => {
+        const handleScroll = () => {
+          setScrolled(window.scrollY > 20);
+          const sections = ["hero", "about", "experience", "projects", "research", "stack", "contact"];
+          const current = sections.find(section => {
+            const el = document.getElementById(section);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              return rect.top <= 120 && rect.bottom >= 120;
+            }
+            return false;
+          });
+          if (current) setActiveSection(current);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+      }, []);
+
+      const navItems = [
+        { label: "About", href: "#about", id: "about" },
+        { label: "Experience", href: "#experience", id: "experience" },
+        { label: "Projects", href: "#projects", id: "projects" },
+        { label: "Research", href: "#research", id: "research" },
+        { label: "Tech Stack", href: "#stack", id: "stack" },
+        { label: "Contact", href: "#contact", id: "contact" }
+      ];
+
+      return (
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled ? "bg-[#030303]/75 backdrop-blur-md border-b border-zinc-800/50 py-3" : "bg-transparent py-5"
+        }`}>
+          <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+            <a href="#hero" className="flex items-center gap-2 group text-white font-medium text-lg tracking-tight">
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden">
+                <div className="text-purple-400"><Icons.Cpu /></div>
+              </div>
+              <span className="bg-gradient-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent group-hover:text-white transition-colors duration-300">
+                {profile.name}
+              </span>
+            </a>
+
+            <div className="hidden md:flex items-center gap-1 bg-zinc-950/40 border border-zinc-800/40 rounded-full px-1.5 py-1 backdrop-blur-sm">
+              {navItems.map(item => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    activeSection === item.id
+                      ? "bg-zinc-800 text-white shadow-sm border border-zinc-700/50"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+
+            <div className="hidden md:flex items-center gap-3">
+              <a href={profile.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-850 hover:border-zinc-700 hover:text-white transition-all text-zinc-400">
+                <Icons.Github />
+              </a>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-850 hover:border-zinc-700 hover:text-white transition-all text-zinc-400">
+                <Icons.Linkedin />
+              </a>
+            </div>
+
+            <button onClick={() => setIsOpen(!isOpen)} className="md:hidden p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors">
+              {isOpen ? <Icons.X /> : <Icons.Menu />}
+            </button>
+          </div>
+
+          {isOpen && (
+            <div className="md:hidden absolute top-full left-0 right-0 bg-[#030303]/95 border-b border-zinc-800 py-6 px-6 backdrop-blur-lg flex flex-col gap-4">
+              {navItems.map(item => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-base font-medium py-2 transition-colors ${
+                    activeSection === item.id ? "text-purple-400" : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <div className="h-px bg-zinc-800 my-2" />
+              <div className="flex gap-4">
+                <a href={profile.github} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-zinc-400 hover:text-white text-sm">
+                  <Icons.Github /> GitHub
+                </a>
+                <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-zinc-400 hover:text-white text-sm">
+                  <Icons.Linkedin /> LinkedIn
+                </a>
+              </div>
+            </div>
+          )}
+        </nav>
+      );
+    }
+
+    // Hero Component
+    function Hero({ profile }) {
+      const [pulseVal, setPulseVal] = useState(72);
+      const [activeTab, setActiveTab] = useState("model.py");
+
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setPulseVal((prev) => {
+            const delta = Math.floor(Math.random() * 5) - 2;
+            const next = prev + delta;
+            return next > 95 || next < 60 ? 72 : next;
+          });
+        }, 1500);
+        return () => clearInterval(interval);
+      }, []);
+
+      const words = profile.tagline.split(" ");
+      const prefix = words.slice(0, words.length - 3).join(" ");
+      const suffix = words.slice(words.length - 3).join(" ");
+
+      const researchPillars = [
+        "On-device neural network deployment (TFLite, ONNX)",
+        "Real-time biosignal telemetry (EEG, ECG, PPG)",
+        "Ultra-low latency wearable mesh communication",
+        "Clinical-grade sensor fusion & anomaly detection",
+        "Energy-efficient WearOS & WatchOS compilation"
+      ];
+
+      const codeFiles = {
+        "model.py": `import tensorflow as tf
+
+class BiosignalNet(tf.keras.Model):
+    def __init__(self):
+        super().__init__()
+        # Conv1D for temporal features
+        self.conv1 = tf.keras.layers.Conv1D(32, 3, activation='relu')
+        self.lstm = tf.keras.layers.LSTM(64)
+        self.dense = tf.keras.layers.Dense(1, activation='sigmoid')
+
+    def call(self, x):
+        x = self.conv1(x)
+        x = self.lstm(x)
+        return self.dense(x)
+
+# Model optimized for edge inference
+model = BiosignalNet()
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+tflite_model = converter.convert()`,
+        "wearos.kt": `package com.harshit.wearable.sensor
+
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+
+class WearSensorService : SensorEventListener {
+    override fun onSensorChanged(event: SensorEvent) {
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
+            val (x, y, z) = event.values
+            val accMagnitude = Math.sqrt((x*x + y*y + z*z).toDouble())
+            EdgeClassifier.push(accMagnitude)
+        }
+    }
+}`
+      };
+
+      return (
+        <section id="hero" className="relative min-h-screen flex items-center justify-center pt-32 pb-24 overflow-hidden cyber-grid radial-glow">
+          <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pulse-slow pointer-events-none" />
+          <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pulse-slow pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center z-10 w-full">
+            <div className="lg:col-span-6 flex flex-col items-start text-left">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-950 border border-zinc-800 text-xs font-mono text-zinc-300 mb-8 self-start">
+                <span className="live-dot w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0"></span>
+                Wearable Computing Researcher & Engineer
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-[52px] font-bold tracking-tight leading-[1.15] text-white mb-6 font-display">
+                {prefix}{" "}
+                <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 tracking-wide block sm:inline">
+                  {suffix}
+                </span>
+              </h1>
+
+              <p className="text-base sm:text-lg text-zinc-400 max-w-xl mb-10 leading-relaxed">
+                {profile.bio}
+              </p>
+
+              <div className="flex flex-col gap-3.5 mb-10 w-full">
+                {researchPillars.map((pillar, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mt-0.5 text-purple-400 flex-shrink-0">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <span className="text-zinc-350 text-sm sm:text-base leading-snug">{pillar}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-10">
+                <a href="#projects" className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white text-black font-semibold hover:bg-zinc-200 transition-all duration-300 shadow-[0_4px_25px_rgba(168,85,247,0.2)] group">
+                  Explore Systems
+                  <span className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><Icons.ArrowUpRight /></span>
+                </a>
+                <a href="#contact" className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-semibold hover:bg-zinc-850 hover:border-zinc-700 transition-all duration-300">
+                  Collaboration Request
+                </a>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Core Stack</span>
+                <div className="flex flex-wrap gap-3">
+                  {["Android", "PyTorch", "WearOS", "TensorFlow Lite", "Flutter", "Figma"].map((tech, idx) => (
+                    <span key={idx} className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-950 border border-zinc-850 text-zinc-400 flex items-center gap-1.5 hover:border-purple-500/30 transition-colors">
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 flex items-center justify-center relative w-full h-[500px]">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
+
+              {/* simulated macOS Laptop */}
+              <div className="absolute top-8 w-full max-w-[480px] sm:max-w-[540px] aspect-[1.6] rounded-2xl border border-white/10 bg-zinc-950/80 shadow-3xl overflow-hidden glass-panel">
+                <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/60 border-b border-white/5 select-none">
+                  <div className="flex gap-1.5">
+                    <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                    <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                    <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveTab("model.py")}
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded transition-colors ${
+                        activeTab === "model.py" ? "bg-zinc-850 text-purple-400 border border-zinc-700/50" : "text-zinc-500 hover:text-zinc-300"
+                      }`}
+                    >
+                      model.py
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("wearos.kt")}
+                      className={`text-[10px] font-mono px-2 py-0.5 rounded transition-colors ${
+                        activeTab === "wearos.kt" ? "bg-zinc-850 text-purple-400 border border-zinc-700/50" : "text-zinc-500 hover:text-zinc-300"
+                      }`}
+                    >
+                      wearos.kt
+                    </button>
+                  </div>
+                  <div className="w-12" />
+                </div>
+
+                <div className="p-5 font-mono text-[9px] sm:text-xs text-zinc-400 leading-relaxed overflow-y-auto h-[calc(100%-44px)] select-text">
+                  <pre className="whitespace-pre">{codeFiles[activeTab]}</pre>
+                </div>
+              </div>
+
+              {/* simulated smartphone overlay */}
+              <div className="absolute left-0 bottom-2 w-[160px] sm:w-[190px] aspect-[0.5] rounded-[36px] border-[6px] border-zinc-800 bg-[#09090b] shadow-2xl overflow-hidden flex flex-col justify-between p-4 z-20">
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-4 rounded-full bg-zinc-900 flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-zinc-800" />
+                </div>
+
+                <div className="flex justify-between items-center pt-4 font-mono text-[8px] text-zinc-500">
+                  <span>9:41</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-purple-400"><Icons.Activity /></span>
+                    <span>BT CONNECT</span>
+                  </div>
+                </div>
+
+                <div className="my-3 flex-grow flex flex-col justify-center gap-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-1 text-[8px] font-mono text-zinc-400">
+                      <span>ECG MONITOR</span>
+                      <span className="text-emerald-400">FILTERED</span>
+                    </div>
+                    <div className="h-12 bg-zinc-950 rounded-lg border border-zinc-900 flex items-center overflow-hidden relative">
+                      <svg className="w-full h-full opacity-80" viewBox="0 0 100 40">
+                        <path d="M0,20 L15,20 L20,10 L25,30 L30,20 L50,20 L55,5 L60,35 L65,20 L80,20 L85,25 L90,15 L100,20" fill="none" stroke="#a855f7" strokeWidth="1.5" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1 text-[8px] font-mono text-zinc-400">
+                      <span>EEG ALPHA POWER</span>
+                      <span className="text-blue-400">12.5 Hz</span>
+                    </div>
+                    <div className="h-12 bg-zinc-950 rounded-lg border border-zinc-900 flex items-center overflow-hidden relative">
+                      <svg className="w-full h-full opacity-80" viewBox="0 0 100 40">
+                        <path d="M0,20 Q10,10 20,20 T40,20 T60,20 T80,20 T100,20" fill="none" stroke="#3b82f6" strokeWidth="1.5" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 border-t border-zinc-900 pt-3">
+                  <div className="bg-zinc-950 p-1.5 rounded-lg border border-zinc-900 flex flex-col items-center">
+                    <span className="text-[10px] font-bold text-white">{pulseVal}</span>
+                    <span className="text-[6px] font-mono text-zinc-500">BPM</span>
+                  </div>
+                  <div className="bg-zinc-950 p-1.5 rounded-lg border border-zinc-900 flex flex-col items-center justify-center">
+                    <span className="text-[10px] font-bold text-purple-400">98.4%</span>
+                    <span className="text-[6px] font-mono text-zinc-500">ACCURACY</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* simulated WearOS floating watch */}
+              <div className="absolute right-0 bottom-12 w-[110px] sm:w-[130px] aspect-square rounded-full border-[6px] border-zinc-800 bg-[#09090b] shadow-2xl overflow-hidden flex flex-col items-center justify-center p-3 z-20 group hover:border-purple-500/40 transition-colors">
+                <div className="flex flex-col items-center justify-center text-center">
+                  <span className="text-purple-400"><Icons.Activity /></span>
+                  <span className="text-[8px] font-mono text-zinc-500 uppercase mt-0.5">HARSHIT.AI</span>
+                  <span className="text-xs font-bold text-white leading-none mt-0.5">4.2 ms</span>
+                  <span className="text-[6px] font-mono text-emerald-450 mt-0.5 flex items-center gap-1">
+                    <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                    ML OK
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#030303] to-transparent pointer-events-none" />
+        </section>
+      );
+    }
+
+    // About Component
+    function About({ profile, specialties }) {
+      const [isFiltered, setIsFiltered] = useState(false);
+      const [logs, setLogs] = useState([
+        "INIT: Core sensor polling layer initialized.",
+        "CONNECT: Handshake completed with WearOS node #092.",
+        "BUFFER: Butterworth filter coefficients allocated.",
+        "CLASSIFIER: Dynamic threshold set to 0.82 magnitude."
+      ]);
+
+      useEffect(() => {
+        const sensorEvents = [
+          "CLASSIFICATION: Gait pattern classified as STABLE.",
+          "TELEMETRY: Streamed 100Hz IMU packets (Packet loss: 0.0%)",
+          "BATTERY: Current draw 4.2mA (Low power mode active)",
+          "ANOMALY: Accelerometer vector spike detected (Transient impact - ignored)",
+          "ALERT: Fall index check 0.14 (Threshold: 0.85)",
+          "BUFFER: Clearing oldest 500 samples from sliding window."
+        ];
+
+        const interval = setInterval(() => {
+          setLogs((prev) => {
+            const nextLog = sensorEvents[Math.floor(Math.random() * sensorEvents.length)];
+            const timestamp = new Date().toLocaleTimeString();
+            return [...prev.slice(-4), `[${timestamp}] ${nextLog}`];
+          });
+        }, 4000);
+
+        return () => clearInterval(interval);
+      }, []);
+
+      return (
+        <section id="about" className="py-32 relative overflow-hidden bg-[#030303]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/5 rounded-full blur-[160px] pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-4">
+                01 // Research overview
+              </h2>
+              <h3 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+                Architecting Systems at the{" "}
+                <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
+                  Edge of Care
+                </span>
+              </h3>
+            </div>
+
+            {/* Bento Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+              <div className="lg:col-span-8 glass-panel p-8 sm:p-10 rounded-3xl glow-card flex flex-col justify-between min-h-[350px]">
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                      <Icons.Award />
+                    </div>
+                    <span className="text-xs font-mono uppercase tracking-wider text-zinc-500">Core Mission</span>
+                  </div>
+                  <h4 className="text-xl sm:text-2xl font-bold text-white mb-5">Research Philosophy</h4>
+                  <p className="text-zinc-400 leading-relaxed text-base sm:text-lg max-w-3xl">
+                    "{profile.researchPhilosophy}"
+                  </p>
+                </div>
+                <div className="mt-8 pt-6 border-t border-zinc-900 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  {profile.stats.map((stat, idx) => (
+                    <div key={idx} className="flex flex-col">
+                      <p className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{stat.value}</p>
+                      <p className="text-[10px] sm:text-xs text-zinc-500 font-mono tracking-wider mt-1">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="lg:col-span-4 glass-panel p-8 rounded-3xl glow-card flex flex-col justify-between min-h-[350px]">
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <span className="text-emerald-400"><Icons.Activity /></span>
+                      <span className="text-xs font-mono text-zinc-400">SIGNAL PROCESSOR</span>
+                    </div>
+                    <span className="flex h-2 w-2 relative">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                  </div>
+
+                  <h4 className="text-lg font-bold text-white mb-2">Live Waveform Mode</h4>
+                  <p className="text-zinc-500 text-xs leading-relaxed mb-6">
+                    Toggle the Butterworth low-pass filter to observe immediate high-frequency noise cancellation.
+                  </p>
+
+                  <div className="h-28 bg-zinc-950/80 border border-zinc-900 rounded-2xl flex items-center justify-center overflow-hidden relative p-2">
+                    <svg className="w-full h-full" viewBox="0 0 200 80">
+                      {isFiltered ? (
+                        <path d="M0,40 Q25,10 50,40 T100,40 T150,40 T200,40" fill="none" stroke="#10b981" strokeWidth="2.5" />
+                      ) : (
+                        <path d="M0,40 L10,30 L15,50 L20,35 L25,55 L30,40 L40,10 L50,70 L60,40 L70,38 L75,45 L80,20 L85,60 L90,40 L100,40 L110,32 L115,48 L120,38 L125,52 L130,40 L140,15 L150,68 L160,40 L170,35 L175,42 L180,18 L185,62 L190,40 L200,40" fill="none" stroke="#ef4444" strokeWidth="1.5" />
+                      )}
+                    </svg>
+
+                    <div className="absolute top-2 right-3 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[8px] font-mono">
+                      {isFiltered ? (
+                        <span className="text-emerald-400">FILTERED // BUTTERWORTH</span>
+                      ) : (
+                        <span className="text-red-400">RAW SENSOR IMPULSE</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 bg-zinc-950 p-1.5 rounded-xl border border-zinc-900 mt-6 select-none">
+                  <button
+                    onClick={() => setIsFiltered(false)}
+                    className={`flex-1 py-2 text-center text-xs font-mono rounded-lg transition-all duration-300 ${
+                      !isFiltered ? "bg-zinc-900 border border-zinc-800 text-red-400 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    Raw Data
+                  </button>
+                  <button
+                    onClick={() => setIsFiltered(true)}
+                    className={`flex-1 py-2 text-center text-xs font-mono rounded-lg transition-all duration-300 ${
+                      isFiltered ? "bg-zinc-900 border border-zinc-800 text-emerald-400 shadow-sm" : "text-zinc-500 hover:text-zinc-300"
+                    }`}
+                  >
+                    Filtered
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento row 2 */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-7 glass-panel p-8 rounded-3xl glow-card flex flex-col justify-between min-h-[350px]">
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                      <Icons.Terminal />
+                    </div>
+                    <span className="text-xs font-mono uppercase tracking-wider text-zinc-500">Node telemetry logs</span>
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-2">On-wrist Telemetry Terminal</h4>
+                  <p className="text-zinc-500 text-xs leading-relaxed mb-6">
+                    Live simulated stream from active ESP32 edge router node parsing accelerometer and bio-electric packets.
+                  </p>
+
+                  <div className="h-44 bg-zinc-950/90 border border-zinc-900 rounded-2xl p-4 font-mono text-[10px] sm:text-xs text-zinc-400 overflow-y-auto flex flex-col gap-1.5 scrollbar-thin scrollbar-thumb-zinc-800">
+                    {logs.map((log, idx) => (
+                      <div key={idx} className="flex gap-2">
+                        <span className="text-purple-500 select-none">❯</span>
+                        <span className="whitespace-pre-wrap select-text">{log}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center text-[10px] font-mono text-zinc-600 mt-6 border-t border-zinc-950 pt-4">
+                  <span>ACTIVE CONNECTED MESH: 3 NODES</span>
+                  <span>JNI BINDINGS: SECURE</span>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 glass-panel p-8 rounded-3xl glow-card flex flex-col justify-between min-h-[350px]">
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <Icons.Cpu />
+                    </div>
+                    <span className="text-xs font-mono uppercase tracking-wider text-zinc-500">Core Investigation</span>
+                  </div>
+                  <h4 className="text-lg font-bold text-white mb-3">Research Focus</h4>
+                  <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                    {profile.researchFocus}
+                  </p>
+                </div>
+
+                <div className="bg-zinc-950/80 border border-zinc-900 rounded-2xl p-5 font-mono text-[10px] sm:text-xs text-zinc-500 leading-relaxed select-text">
+                  <span className="text-purple-400">const</span> researcher = &#123;<br />
+                  &nbsp;&nbsp;name: <span className="text-emerald-400">"{profile.name}"</span>,<br />
+                  &nbsp;&nbsp;focus: <span className="text-emerald-400">"Wearable Health AI"</span>,<br />
+                  &nbsp;&nbsp;stack: [<span className="text-emerald-400">"WearOS"</span>, <span className="text-emerald-400">"TFLite"</span>, <span className="text-emerald-400">"ESP-IDF"</span>]<br />
+                  &#125;;
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+              {specialties.map((item, idx) => (
+                <div key={idx} className="glass-panel glass-panel-hover p-6 rounded-2xl flex flex-col items-start text-left transition-all duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-850 flex items-center justify-center mb-5 text-purple-400">
+                    {getIcon(item.icon)}
+                  </div>
+                  <h5 className="text-base font-bold text-white mb-2">{item.title}</h5>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Experience Component
+    function Experience({ experiences }) {
+      return (
+        <section id="experience" className="py-24 relative overflow-hidden bg-[#030303]">
+          <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-px bg-zinc-800/60 hidden md:block" />
+
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-3">02 // Journey</h2>
+              <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">Professional Timeline</h3>
+            </div>
+
+            <div className="flex flex-col gap-12 relative">
+              {experiences.map((exp, idx) => (
+                <div key={idx} className={`flex flex-col md:flex-row md:justify-between items-stretch gap-6 md:gap-0 ${
+                  idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                }`}>
+                  <div className="w-full md:w-[46%]">
+                    <div className="glass-panel p-8 rounded-3xl glow-card hover:border-zinc-700/80 transition-all duration-300">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                        <div>
+                          <h4 className="text-lg font-bold text-white leading-tight">{exp.role}</h4>
+                          <p className="text-zinc-400 text-sm mt-1">{exp.company}</p>
+                        </div>
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-950 border border-zinc-800 text-xs text-zinc-400 self-start font-mono">
+                          <Icons.Calendar />
+                          {exp.duration}
+                        </div>
+                      </div>
+
+                      <ul className="space-y-3.5 text-zinc-400 text-sm">
+                        {exp.highlights.map((highlight, hIdx) => (
+                          <li key={hIdx} className="flex gap-2.5 items-start leading-relaxed">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-6 pt-4 border-t border-zinc-800/60 flex items-center gap-1.5 text-zinc-500 text-xs font-mono">
+                        <Icons.MapPin />
+                        {exp.location}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="hidden md:flex items-center justify-center w-12 z-20">
+                    <div className="w-8 h-8 rounded-full bg-[#030303] border-2 border-zinc-800 flex items-center justify-center shadow-lg text-purple-400">
+                      {getIcon(exp.icon)}
+                    </div>
+                  </div>
+
+                  <div className="hidden md:block w-[46%]" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Projects Component
+    function Projects({ projects }) {
+      return (
+        <section id="projects" className="py-24 relative overflow-hidden bg-[#030303]">
+          <div className="absolute top-1/3 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
+              <div>
+                <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-3">03 // Engineering</h2>
+                <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">Featured Projects</h3>
+              </div>
+              <p className="text-zinc-500 text-sm mt-4 md:mt-0 font-mono">// Building robust hardware and software combinations</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {projects.map((project, idx) => (
+                <div key={idx} className={`glass-panel p-8 rounded-3xl glow-card flex flex-col justify-between transition-all duration-300 ${
+                  project.featured ? "md:col-span-2 border-purple-500/20 shadow-[0_0_35px_rgba(168,85,247,0.05)]" : "border-zinc-800/60"
+                }`}>
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-purple-400">
+                        {getIcon(project.icon)}
+                      </div>
+                      <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-zinc-950 hover:bg-zinc-900 border border-zinc-850 hover:text-white transition-colors text-zinc-400">
+                        <Icons.Github />
+                      </a>
+                    </div>
+
+                    <h4 className="text-xl font-bold text-white mb-3">{project.title}</h4>
+                    <p className="text-zinc-400 text-sm leading-relaxed mb-6">{project.desc}</p>
+                  </div>
+
+                  <div>
+                    <div className="px-4 py-2 rounded-xl bg-zinc-950 border border-zinc-900 text-xs font-mono text-zinc-400 mb-6 flex items-center gap-2">
+                      <div className="text-purple-400"><Icons.Heart /></div>
+                      <span>{project.metrics}</span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {project.tags.map((tag, tIdx) => (
+                        <span key={tIdx} className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-855 text-xs text-zinc-300 font-mono">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Research Component
+    function Research({ research }) {
+      // Illustrations
+      const illustrations = [
+        <svg key="1" className="w-16 h-16 text-purple-400 opacity-80 mb-4" viewBox="0 0 100 100" fill="none">
+          <path d="M10 50 H35 L42 20 L48 80 L55 50 H90" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>,
+        <svg key="2" className="w-16 h-16 text-blue-400 opacity-80 mb-4" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="20" r="6" stroke="currentColor" strokeWidth="2" />
+          <circle cx="25" cy="50" r="6" stroke="currentColor" strokeWidth="2" />
+          <circle cx="75" cy="50" r="6" stroke="currentColor" strokeWidth="2" />
+          <circle cx="50" cy="80" r="6" stroke="currentColor" strokeWidth="2" />
+          <line x1="50" y1="26" x2="25" y2="44" stroke="currentColor" strokeWidth="2" />
+          <line x1="50" y1="26" x2="75" y2="44" stroke="currentColor" strokeWidth="2" />
+          <line x1="25" y1="56" x2="50" y2="74" stroke="currentColor" strokeWidth="2" />
+          <line x1="75" y1="56" x2="50" y2="74" stroke="currentColor" strokeWidth="2" />
+        </svg>,
+        <svg key="3" className="w-16 h-16 text-pink-400 opacity-80 mb-4" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="8" stroke="currentColor" strokeWidth="2.5" />
+          <circle cx="20" cy="30" r="4" fill="currentColor" />
+          <circle cx="80" cy="35" r="4" fill="currentColor" />
+          <circle cx="35" cy="80" r="4" fill="currentColor" />
+          <line x1="50" y1="50" x2="20" y2="30" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+          <line x1="50" y1="50" x2="80" y2="35" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+          <line x1="50" y1="50" x2="35" y2="80" stroke="currentColor" strokeWidth="1.5" opacity="0.4" />
+        </svg>
+      ];
+
+      return (
+        <section id="research" className="py-32 relative overflow-hidden bg-[#030303]">
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="text-center max-w-2xl mx-auto mb-20">
+              <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-4">
+                04 // Academics
+              </h2>
+              <h3 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
+                Scientific Pillars &{" "}
+                <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
+                  Investigation Areas
+                </span>
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {research.map((interest, idx) => (
+                <div key={idx} className="glass-panel p-8 sm:p-10 rounded-3xl glow-card hover:border-zinc-800 transition-all duration-500 flex flex-col justify-between relative overflow-hidden group">
+                  <div>
+                    <div className="font-serif italic text-purple-400 text-sm sm:text-base mb-6 tracking-wide font-normal">
+                      [ {interest.title.split(" & ")[0]} ]
+                    </div>
+
+                    <div className="flex justify-start">
+                      {illustrations[idx]}
+                    </div>
+
+                    <h5 className="text-[10px] text-zinc-500 font-mono tracking-wider mb-2">
+                      {interest.subtitle}
+                    </h5>
+
+                    <h4 className="text-lg sm:text-xl font-bold text-white leading-snug mb-4">
+                      {interest.title}
+                    </h4>
+
+                    <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                      {interest.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-8 pt-4 border-t border-zinc-950 flex items-center justify-between text-zinc-500 text-xs font-mono">
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-purple-400"><Icons.FileText /></span>
+                      Active Investigation
+                    </span>
+                    <span>{interest.id}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // TechStack Component
+    function TechStack({ techStack }) {
+      return (
+        <section id="stack" className="py-24 relative overflow-hidden bg-[#030303]">
+          <div className="absolute top-1/4 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-3">05 // Toolkit</h2>
+              <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">Technical Capabilities</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {techStack.map((category, idx) => (
+                <div key={idx} className="glass-panel p-8 rounded-3xl glow-card hover:border-zinc-700/80 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-purple-400">
+                      {getIcon(category.icon)}
+                    </div>
+                    <h4 className="font-bold text-white text-sm tracking-wide uppercase">{category.title}</h4>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2.5">
+                    {category.skills.map((skill, sIdx) => (
+                      <span key={sIdx} className="px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-900 text-xs font-mono text-zinc-300 hover:text-white hover:border-zinc-800 transition-colors cursor-default">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Achievements Component
+    function Achievements({ achievements }) {
+      return (
+        <section id="achievements" className="py-24 relative overflow-hidden bg-[#030303]">
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-3">06 // Recognition</h2>
+              <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">Honors & Publications</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {achievements.map((ach, idx) => (
+                <div key={idx} className="glass-panel p-8 rounded-3xl glow-card hover:border-zinc-700/80 transition-all duration-300 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="px-2.5 py-1 rounded bg-zinc-950 border border-zinc-900 text-[10px] font-mono text-zinc-400 uppercase tracking-wider">
+                        {ach.category}
+                      </span>
+                      <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-850 flex items-center justify-center text-purple-400">
+                        {getIcon(ach.icon)}
+                      </div>
+                    </div>
+
+                    <h4 className="text-base font-bold text-white mb-3">{ach.title}</h4>
+                    <p className="text-zinc-400 text-sm leading-relaxed">{ach.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Blog Component
+    function Blog({ blog }) {
+      return (
+        <section id="blog" className="py-24 relative overflow-hidden bg-[#030303]">
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
+              <div>
+                <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-3">07 // Writing</h2>
+                <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-white font-display">Research & Dev Logs</h3>
+              </div>
+              <p className="text-zinc-500 text-sm mt-4 md:mt-0 font-mono">// Documenting experiments and engineering patterns</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {blog.map((post, idx) => (
+                <a key={idx} href={post.url} className="glass-panel p-8 rounded-3xl glow-card hover:border-zinc-700/80 transition-all duration-300 flex flex-col justify-between group">
+                  <div>
+                    <div className="flex items-center gap-4 text-xs font-mono text-zinc-500 mb-6">
+                      <span className="flex items-center gap-1">
+                        <Icons.Calendar />
+                        {post.date}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Icons.Clock />
+                        {post.readTime}
+                      </span>
+                    </div>
+
+                    <h4 className="text-lg font-bold text-white mb-3 group-hover:text-purple-400 transition-colors flex items-center justify-between">
+                      {post.title}
+                      <span className="text-zinc-600 group-hover:text-purple-400 transition-colors"><Icons.ArrowUpRight /></span>
+                    </h4>
+
+                    <p className="text-zinc-400 text-sm leading-relaxed mb-6">{post.desc}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-zinc-900">
+                    {post.tags.map((tag, tIdx) => (
+                      <span key={tIdx} className="px-2.5 py-1 rounded bg-zinc-950 border border-zinc-900 text-[10px] text-zinc-400 font-mono">{tag}</span>
+                    ))}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Contact Component
+    function Contact({ profile }) {
+      const [formData, setFormData] = useState({ name: "", email: "", affiliation: "", message: "" });
+      const [submitted, setSubmitted] = useState(false);
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        setSubmitted(true);
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ name: "", email: "", affiliation: "", message: "" });
+        }, 4000);
+      };
+
+      return (
+        <section id="contact" className="py-24 relative overflow-hidden bg-[#030303]">
+          <div className="absolute bottom-0 left-1/4 -translate-x-1/2 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+          <div className="max-w-6xl mx-auto px-6 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div className="lg:col-span-5 flex flex-col justify-between h-full">
+                <div>
+                  <h2 className="text-xs font-mono tracking-widest text-purple-400 uppercase mb-3">08 // Connect</h2>
+                  <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-6 font-display">Start a Collaboration</h3>
+                  <p className="text-zinc-400 text-base leading-relaxed mb-8">
+                    Whether you're looking to collaborate on a wearable bio-sensing research paper, deploy custom IoT architectures, or discuss on-device machine learning systems, I'm always open to discussing new engineering projects.
+                  </p>
+                </div>
+
+                <div className="space-y-6 pt-6 border-t border-zinc-900 font-mono text-sm text-zinc-400">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-zinc-950 border border-zinc-900 flex items-center justify-center text-purple-400">
+                      <Icons.Mail />
+                    </div>
+                    <span>{profile.email}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-zinc-950 border border-zinc-900 flex items-center justify-center text-blue-400">
+                      <Icons.MapPin />
+                    </div>
+                    <span>{profile.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7 w-full">
+                <div className="glass-panel p-8 sm:p-10 rounded-3xl glow-card">
+                  {submitted ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <div className="text-emerald-400 mb-4 animate-bounce"><Icons.CheckCircle /></div>
+                      <h4 className="text-xl font-bold text-white mb-2">Message Sent</h4>
+                      <p className="text-zinc-400 text-sm max-w-sm">
+                        Thank you. I've received your request and will reply via email shortly.
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="flex flex-col gap-2">
+                          <label htmlFor="name" className="text-xs font-mono text-zinc-400 uppercase">Your Name</label>
+                          <input
+                            type="text"
+                            id="name"
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Newton"
+                            className="px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-900 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-zinc-700 transition-colors"
+                          />
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <label htmlFor="email" className="text-xs font-mono text-zinc-400 uppercase">Email Address</label>
+                          <input
+                            type="type"
+                            id="email"
+                            required
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="newton@mit.edu"
+                            className="px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-900 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-zinc-700 transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label htmlFor="affiliation" className="text-xs font-mono text-zinc-400 uppercase">Institution / Corporate Affiliation</label>
+                        <input
+                          type="text"
+                          id="affiliation"
+                          value={formData.affiliation}
+                          onChange={(e) => setFormData({ ...formData, affiliation: e.target.value })}
+                          placeholder="e.g. Research Center / Company"
+                          className="px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-900 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-zinc-700 transition-colors"
+                        />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <label htmlFor="message" className="text-xs font-mono text-zinc-400 uppercase">Collaboration Details</label>
+                        <textarea
+                          id="message"
+                          required
+                          rows={5}
+                          value={formData.message}
+                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                          placeholder="Describe the research or system requirements..."
+                          className="px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-900 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-zinc-700 transition-colors resize-none"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white hover:bg-zinc-200 text-black font-semibold transition-all duration-300 shadow-[0_4px_20px_rgba(255,255,255,0.1)] group"
+                      >
+                        Submit Request
+                        <span className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><Icons.Send /></span>
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // Footer Component
+    function Footer({ profile }) {
+      const currentYear = new Date().getFullYear();
+
+      return (
+        <footer className="bg-[#030303] border-t border-zinc-900 py-12">
+          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2 text-zinc-500 text-sm font-mono">
+              <div className="text-purple-500"><Icons.Cpu /></div>
+              <span>&copy; {currentYear} {profile.name}. All rights reserved.</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-zinc-500 text-xs font-mono">
+              <span>Engineered with</span>
+              <span className="text-red-500"><Icons.Heart /></span>
+              <span>for Healthcare</span>
+            </div>
+
+            <div className="flex items-center gap-4 text-zinc-500">
+              <a href={profile.github} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Icons.Github />
+              </a>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <Icons.Linkedin />
+              </a>
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    // Main App Component
+    function App() {
+      const data = window.portfolioData;
+      if (!data) return <div className="text-white text-center py-20 font-mono">Loading dynamic configuration...</div>;
+
+      return (
+        <div className="relative min-h-screen bg-[#030303] overflow-x-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#1c1c1f_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
+          <Navbar profile={data.profile} />
+          <Hero profile={data.profile} />
+          <About profile={data.profile} specialties={data.specialties} />
+          <Experience experiences={data.experiences} />
+          <Projects projects={data.projects} />
+          <Research research={data.research} />
+          <TechStack techStack={data.techStack} />
+          <Achievements achievements={data.achievements} />
+          <Blog blog={data.blog} />
+          <Contact profile={data.profile} />
+          <Footer profile={data.profile} />
+        </div>
+      );
+    }
+
+    // Render the App
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
