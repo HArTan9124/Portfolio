@@ -1,4 +1,4 @@
-// File: /home/tandon/Portfolio/app/page.tsx
+// File: /home/tandon/portfolio/Portfolio/app/page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
