@@ -61,6 +61,12 @@ export interface BlogPost {
   url: string;
 }
 
+export interface CodeSnippet {
+  filename: string;
+  language: string;
+  code: string;
+}
+
 export interface Profile {
   name: string;
   role: string;
@@ -72,6 +78,11 @@ export interface Profile {
   linkedin: string;
   researchPhilosophy: string;
   researchFocus: string;
+  heroSubtitle: string;
+  researchPillars: string[];
+  coreStack: string[];
+  codeSnippets: CodeSnippet[];
+  contactDescription: string;
   stats: Stat[];
 }
 
@@ -98,6 +109,28 @@ export const portfolioData: PortfolioData = {
     linkedin: "https://linkedin.com",
     researchPhilosophy: "I believe that the next breakthrough in healthcare will not happen in massive clinical rooms, but silently on our wrists. By combining wearable sensors with on-device artificial intelligence, we can move from reactive healthcare to predictive, continuous safeguarding.",
     researchFocus: "Investigating decentralized cyber-physical healthcare systems. Integrating BLE mesh with local mobile hubs for continuous intensive care telemetry.",
+    heroSubtitle: "Architecting Systems at the Edge of Care",
+    contactDescription: "Whether you're looking to collaborate on a wearable bio-sensing research paper, deploy custom IoT architectures, or discuss on-device machine learning systems, I'm always open to discussing new engineering projects.",
+    researchPillars: [
+      "On-device neural network deployment (TFLite, ONNX)",
+      "Real-time biosignal telemetry (EEG, ECG, PPG)",
+      "Ultra-low latency wearable mesh communication",
+      "Clinical-grade sensor fusion & anomaly detection",
+      "Energy-efficient WearOS & WatchOS compilation"
+    ],
+    coreStack: ["Android", "PyTorch", "WearOS", "TensorFlow Lite", "Flutter", "Figma"],
+    codeSnippets: [
+      {
+        filename: "biosignal.py",
+        language: "python",
+        code: `# ECG Anomaly Classifier — runnable demo\nimport math, random\nrandom.seed(42)\n\n# Simulate 100-sample ECG window @ 100 Hz\necg = [math.sin(i * 0.0628) + random.gauss(0, 0.05) for i in range(100)]\nmean = sum(ecg) / len(ecg)\nstd  = math.sqrt(sum((x - mean)**2 for x in ecg) / len(ecg))\nanomalies = [i for i, x in enumerate(ecg) if abs(x - mean) > 2.5 * std]\n\nprint(f\"Samples     : {len(ecg)} @ 100 Hz\")\nprint(f\"Mean        : {mean:.4f}\")\nprint(f\"Std Dev     : {std:.4f}\")\nprint(f\"Anomalies   : {len(anomalies)}\")\nprint(f\"Status      : {'ANOMALY DETECTED' if anomalies else 'STABLE'}\")`,
+      },
+      {
+        filename: "wearos.kt",
+        language: "kotlin",
+        code: `fun main() {\n    data class Packet(val x: Float, val y: Float, val z: Float)\n    val packets = listOf(\n        Packet(0.1f, 0.2f, 9.8f),\n        Packet(0.3f, -0.1f, 9.7f),\n        Packet(12.5f, 8.3f, 4.2f)   // simulated fall event\n    )\n    println(\"WearOS IMU Telemetry Stream\")\n    println(\"-\".repeat(38))\n    packets.forEachIndexed { i, p ->\n        val mag = Math.sqrt((p.x*p.x + p.y*p.y + p.z*p.z).toDouble())\n        val status = if (mag > 12.0) \"ANOMALY\" else \"STABLE\"\n        println(\"Packet #\${i+1}  mag=\${\"%.2f\".format(mag)} m/s²  [$status]\")\n    }\n}`,
+      },
+    ],
     stats: [
       { value: "98.4%", label: "ANOMALY ACCURACY" },
       { value: "< 10ms", label: "ALERT TRIGGER TIMING" },

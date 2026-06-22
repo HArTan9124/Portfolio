@@ -9,7 +9,7 @@ interface ContactProps {
 }
 
 export default function Contact({ profile }: ContactProps) {
-  const { email, location } = profile;
+  const { email, location, contactDescription } = profile;
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -44,7 +44,7 @@ export default function Contact({ profile }: ContactProps) {
                 Start a Collaboration
               </h3>
               <p className="text-zinc-400 text-base leading-relaxed mb-8">
-                Whether you're looking to collaborate on a wearable bio-sensing research paper, deploy custom IoT architectures, or discuss on-device machine learning systems, I'm always open to discussing new engineering projects.
+                {contactDescription}
               </p>
             </div>
 

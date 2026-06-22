@@ -12,7 +12,7 @@ interface AboutProps {
 }
 
 export default function About({ profile, specialties }: AboutProps) {
-  const { researchPhilosophy, researchFocus, stats, name } = profile;
+  const { researchPhilosophy, researchFocus, stats, name, heroSubtitle } = profile;
 
   // Signal filter state (Raw vs Filtered)
   const [isFiltered, setIsFiltered] = useState(false);
@@ -68,9 +68,9 @@ export default function About({ profile, specialties }: AboutProps) {
             01 // Research overview
           </h2>
           <h3 className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight">
-            Architecting Systems at the{" "}
+            {heroSubtitle?.split(" ").slice(0, -3).join(" ") || "Architecting Systems at the"}{" "}
             <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">
-              Edge of Care
+              {heroSubtitle?.split(" ").slice(-3).join(" ") || "Edge of Care"}
             </span>
           </h3>
         </div>
@@ -90,7 +90,7 @@ export default function About({ profile, specialties }: AboutProps) {
                 Research Philosophy
               </h4>
               <p className="text-zinc-400 leading-relaxed text-base sm:text-lg max-w-3xl">
-                "{researchPhilosophy}"
+                {researchPhilosophy}
               </p>
             </div>
             {/* Embedded Live Stats Grid */}

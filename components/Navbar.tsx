@@ -2,9 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { Menu, X, Cpu, Github, Linkedin } from "lucide-react";
-import { portfolioData } from "@/data/portfolio";
+import { portfolioData, type Profile } from "@/data/portfolio";
 
-export default function Navbar() {
+interface NavbarProps {
+  profile?: Profile;
+}
+
+export default function Navbar({ profile }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
@@ -40,7 +44,7 @@ export default function Navbar() {
     { label: "Contact", href: "#contact", id: "contact" },
   ];
 
-  const { name, github, linkedin } = portfolioData.profile;
+  const { name, github, linkedin } = profile || portfolioData.profile;
 
   return (
     <nav

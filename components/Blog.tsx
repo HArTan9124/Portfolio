@@ -32,8 +32,10 @@ export default function Blog({ blog }: BlogProps) {
           {posts.map((post, idx) => (
             <a
               key={idx}
-              href="#"
-              className="glass-panel p-8 rounded-3xl glow-card hover:border-zinc-700/80 transition-all duration-300 flex flex-col justify-between group"
+              href={post.url && post.url !== "#" ? post.url : undefined}
+              target={post.url && post.url !== "#" ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              className="glass-panel p-8 rounded-3xl glow-card hover:border-zinc-700/80 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
             >
               <div>
                 {/* Meta details */}

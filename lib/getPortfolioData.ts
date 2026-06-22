@@ -8,6 +8,7 @@
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase";
 import { portfolioData, type PortfolioData } from "@/data/portfolio";
+import { mergePortfolioData } from "./usePortfolioData";
 
 const COLLECTION = "portfolio";
 const DOCUMENT = "content";
@@ -24,9 +25,9 @@ export async function getPortfolioData(): Promise<PortfolioData> {
     const snap = await getDoc(ref);
 
     if (snap.exists()) {
-      const data = snap.data() as PortfolioData;
+      const data = snap.data() as Partial<PortfolioData>;
       // Merge with static data as a safety net for any missing keys
-      return { ...portfolioData, ...data };
+      return mergePortfolioData(portfolioData, data);
     }
 
     console.warn("[portfolio] Firestore document not found — using static data.");
