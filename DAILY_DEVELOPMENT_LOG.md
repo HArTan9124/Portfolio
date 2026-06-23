@@ -453,3 +453,37 @@ Synchronize biosignal code execution output directly to the mobile phone mockup,
 ### Reasoning
 
 * **End-to-End Simulation Integrity**: Updating the mobile app mockup alongside the developer console delivers an authentic, immersive cyber-physical interface experience, bridging the raw CLI sandbox with the patient telemetry visualizer.
+
+## [2026-06-23 21:37]
+
+### Request
+
+Create README files for both the Portfolio and the Admin Panel projects.
+
+### Files Modified
+
+* `Portfolio/README.md` (Created)
+* `admin pannel/README.md` (Created)
+* `Portfolio/DAILY_DEVELOPMENT_LOG.md`
+
+### Changes Made
+
+* Created `Portfolio/README.md` covering: overview, tech stack table, full feature list with section breakdown, project directory structure, getting started steps, environment variables, Firebase setup guide, Firestore data model, content management workflow, deployment notes, and known issues table.
+* Created `admin pannel/README.md` covering: overview, tech stack table, feature list, full directory structure, installation steps, all required environment variables, authentication & security layers (login page + layout guard + Firestore rules), editor reference table for all 9 section editors, seeding instructions, relationship-to-portfolio sync diagram, and known issues table.
+
+### Reasoning
+
+* Both projects are distinct Next.js apps living in the same monorepo-style workspace. Separate README files per project allow them to be understood independently (e.g. if admin panel is shared or open-sourced separately) while cross-referencing each other.
+* README content derived from the DAILY_DEVELOPMENT_LOG history to ensure accuracy.
+
+### Testing
+
+* Both files created successfully and verified for completeness against actual project structure.
+
+### Known Issues
+
+* None.
+
+### Next Steps
+
+* Add a root `README.md` at `portfolio/` level if the repo is to be published, linking to both sub-project READMEs.
