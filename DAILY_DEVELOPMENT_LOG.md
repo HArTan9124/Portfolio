@@ -433,3 +433,23 @@ Refactor terminal modal controls to macOS style (traffic lights with close, mini
 
 * **Familiar Window UX**: macOS-style traffic lights provide an intuitive, modern, interactive desktop feeling.
 * **Seamless Context Blending**: Blending the minimized terminal state directly into the interactive phone mockup keeps the user engaged with the running console/emulator state without taking up modal overlay space.
+
+## [2026-06-22 10:05]
+
+### Request
+
+Synchronize biosignal code execution output directly to the mobile phone mockup, showing the run results, live ECG/EEG waveform updates, heart rate fluctuations, and status alerts.
+
+### Files Modified
+
+* `Portfolio/components/Hero.tsx`
+
+### Changes Made
+
+* **Dynamic `phoneMetrics` State & Synchronizer**: Declared a unified `phoneMetrics` state structure representing active biosignal telemetry. Added a `useEffect` that listens to `runState`, `result`, and `watchState` to parse output streams in real-time.
+* **Live ECG / EEG Waveforms**: Refactored SVG path render blocks in the phone mockup to read dynamic coordinates from state. When the sandboxed code determines an anomaly or a simulated fall event is triggered, the wave patterns instantly switch from a smooth sinus rhythm to a high-frequency chaotic layout, and stroke colors dynamically transition from emerald (stable) to crimson (alert).
+* **Heart Rate & Accuracy Binding**: Linked heart rate (BPM) fluctuation and algorithm accuracy displays directly to current execution metrics. The pulse rate organically shifts base values (e.g. from 72 up to 128 BPM during an alert state).
+
+### Reasoning
+
+* **End-to-End Simulation Integrity**: Updating the mobile app mockup alongside the developer console delivers an authentic, immersive cyber-physical interface experience, bridging the raw CLI sandbox with the patient telemetry visualizer.
