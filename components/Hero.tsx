@@ -5,6 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Check, Activity, Heart, Play, X, Terminal, Copy, RotateCcw } from "lucide-react";
 import type { Profile, CodeSnippet } from "@/data/portfolio";
 
+// ── Security: only filenames matching this allowlist may be executed via Pyodide.
+// If a Firestore-sourced snippet has a filename NOT in this set, the run button
+// shows a static demo output instead of executing untrusted code.
+// Update this set whenever you intentionally add a new vetted demo snippet.
+const VETTED_PYODIDE_FILENAMES = new Set([
+  "biosignal.py",
+  "fall_detect.py",
+  "ecg_filter.py",
+  "hrv_analysis.py",
+]);
+
 interface HeroProps { profile: Profile; }
 
 interface RunResult { stdout: string; stderr: string; exitCode: number; }
@@ -179,9 +190,25 @@ export default function Hero({ profile }: HeroProps) {
                      activeSnippet.language?.toLowerCase() === "python";
 
     if (isPython) {
+      // ── Security check: only run snippets whose filename is in the vetted set.
+      // This prevents a compromised Firestore/admin account from pushing arbitrary
+      // Python code that would execute in every visitor's browser.
+      if (!VETTED_PYODIDE_FILENAMES.has(activeSnippet.filename ?? "")) {
+        setResult({
+          stdout:
+            "[Demo output — live execution disabled for unvetted snippets]\n\n" +
+            "This snippet is shown as a static demo.\n" +
+            "To enable execution, add the filename to VETTED_PYODIDE_FILENAMES in Hero.tsx.",
+          stderr: "",
+          exitCode: 0,
+        });
+        setRunState("done");
+        return;
+      }
+
       setIsPyodideLoading(true);
       try {
-        if (typeof window !== "undefined" && !window.hasOwnProperty("loadPyodide")) {
+        if (typeof window !== "undefined" && !Object.prototype.hasOwnProperty.call(window, "loadPyodide")) {
           const script = document.createElement("script");
           script.src = "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js";
           await new Promise((resolve, reject) => {

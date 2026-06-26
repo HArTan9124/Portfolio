@@ -3,6 +3,7 @@
 import React from "react";
 import { Cpu, Github, Linkedin, Heart } from "lucide-react";
 import type { Profile } from "@/data/portfolio";
+import { sanitizeUrl } from "@/lib/sanitizeUrl";
 
 interface FooterProps {
   profile: Profile;
@@ -11,6 +12,8 @@ interface FooterProps {
 export default function Footer({ profile }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const { name, github, linkedin } = profile;
+  const safeGithub   = sanitizeUrl(github);
+  const safeLinkedin = sanitizeUrl(linkedin);
 
   return (
     <footer className="bg-[#030303] border-t border-zinc-900 py-12">
@@ -31,7 +34,7 @@ export default function Footer({ profile }: FooterProps) {
         {/* Social Link Redirects */}
         <div className="flex items-center gap-4 text-zinc-500">
           <a
-            href={github}
+            href={safeGithub}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-white transition-colors"
@@ -39,7 +42,7 @@ export default function Footer({ profile }: FooterProps) {
             <Github className="w-4 h-4" />
           </a>
           <a
-            href={linkedin}
+            href={safeLinkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-white transition-colors"

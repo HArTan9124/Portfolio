@@ -487,3 +487,64 @@ Create README files for both the Portfolio and the Admin Panel projects.
 ### Next Steps
 
 * Add a root `README.md` at `portfolio/` level if the repo is to be published, linking to both sub-project READMEs.
+
+## [2026-06-26 23:10]
+
+### Request
+
+Full security audit remediation — address all high/medium/low findings from the npm audit + manual code review.
+
+### Files Modified
+
+* `Portfolio/.gitignore`
+* `Portfolio/lib/sanitizeUrl.ts` (Created)
+* `Portfolio/app/api/run-code/route.ts`
+* `Portfolio/components/Hero.tsx`
+* `Portfolio/components/Projects.tsx`
+* `Portfolio/components/Blog.tsx`
+* `Portfolio/components/Navbar.tsx`
+* `Portfolio/components/Footer.tsx`
+* `Portfolio/next.config.ts`
+* `admin pannel/next.config.ts`
+* `firestore.rules`
+
+### Changes Made
+
+* **[HIGH] .gitignore fix**: Added `.env.local`, `.env.*.local`, `.env` to Portfolio `.gitignore` to prevent future credential commits.
+* **[HIGH] API rate limiting**: Rewrote `/api/run-code/route.ts` with a per-IP in-process sliding-window rate limiter (10 req/60s), 16 KB body cap, 8 000-char code limit, strict language allowlist (Python excluded — Pyodide handles it), filename sanitization, and abuse logging.
+* **[HIGH] Pyodide sandboxing**: Added `VETTED_PYODIDE_FILENAMES` allowlist in `Hero.tsx`. Any Python snippet with a filename NOT in the set shows a static demo output instead of executing Firestore-sourced code in the visitor's browser.
+* **[MEDIUM] URL sanitization**: Created `lib/sanitizeUrl.ts` utility that blocks all non-`https:` URL schemes. Applied to every `href` rendering a Firestore-controlled URL in `Projects.tsx`, `Blog.tsx`, `Navbar.tsx`, and `Footer.tsx`.
+* **[MEDIUM] Security headers (Portfolio)**: Updated `Portfolio/next.config.ts` with full `headers()` function. Added CSP (covering Firebase, Google Fonts, Pyodide, Piston), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, and `X-XSS-Protection`.
+* **[MEDIUM] Security headers (Admin Panel)**: Updated `admin pannel/next.config.ts` with a stricter CSP (no Pyodide/Piston), identical hardening headers, and startup-time HTTPS validation of `NEXT_PUBLIC_PORTFOLIO_URL`.
+* **[MEDIUM] Firestore email_verified**: Added `request.auth.token.email_verified == true` to the `isAdmin()` function in `firestore.rules` to block unverified Firebase accounts.
+* **[MEDIUM] Firestore schema validation**: Added `isValidPortfolioContent()` function with top-level key allowlist, map/list type checks, and array size caps (projects ≤ 50, experience ≤ 30, blog ≤ 100, achievements ≤ 100). Write rule now requires `isAdmin() && isValidPortfolioContent()`.
+
+### Reasoning
+
+* **Defense in depth**: Multiple independent layers — rate limit, allowlist, schema validation, URL sanitization — ensure no single bypass compromises the system.
+* **Pyodide filename allowlist vs disabling execution entirely**: Disabling execution would reduce portfolio interactivity. The allowlist approach preserves the feature for vetted demos while blocking unknown Firestore-pushed snippets.
+* **email_verified on Firestore**: This was previously removed (see 2026-06-22 entry). It was removed to fix sign-in for Email/Password accounts. Because the admin uses Google OAuth (which sets `email_verified=true` automatically), restoring this check is safe and closes the unverified-account attack vector.
+* **In-process rate limiter**: Sufficient for a personal portfolio on a single Next.js instance. A Redis/Upstash-backed limiter should replace this if the app is scaled horizontally.
+
+### Testing
+
+* TypeScript compilation should pass: all imports resolve, no new `any` escapes.
+* Rate limit: 11+ rapid POSTs to `/api/run-code` from same IP → 429 on the 11th.
+* Language reject: POST with `language: "bash"` → 400 with allowed-languages message.
+* URL sanitize: `javascript:alert(1)` in project.demo → rendered as `#` (no link).
+* CSP: DevTools → Network → check response headers on any page load.
+* Firestore: attempt write from an unverified-email account → denied by rules.
+
+### Known Issues
+
+* `VETTED_PYODIDE_FILENAMES` in `Hero.tsx` is a compile-time constant; to add a new executable snippet, the developer must update this file and redeploy. This is intentional (security boundary).
+* Static HTML files `Portfolio/index.html` and `Portfolio/test_cdn.html` still exist and use CDN scripts without SRI. These should be removed or excluded from production builds. Track as future cleanup.
+* npm audit vulnerabilities in `undici` (transitive via Firebase) and `postcss` (via Next) are upstream dependency issues. Monitor for patched releases and upgrade when available.
+
+### Next Steps
+
+1. Deploy updated Firestore rules: Firebase Console → Firestore → Rules → Publish.
+2. Remove or `.gitignore` `Portfolio/index.html` and `Portfolio/test_cdn.html` from production.
+3. Monitor `npm audit` after next Firebase / Next.js minor release for `undici` and `postcss` patches.
+4. Consider moving the in-process rate limiter to Upstash Redis when/if deploying to Vercel (serverless instances don't share memory).
+5. Add `email_verified` check back to admin panel login page validation for additional defense.

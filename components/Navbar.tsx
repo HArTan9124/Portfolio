@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X, Cpu, Github, Linkedin } from "lucide-react";
 import { portfolioData, type Profile } from "@/data/portfolio";
+import { sanitizeUrl } from "@/lib/sanitizeUrl";
 
 interface NavbarProps {
   profile?: Profile;
@@ -45,6 +46,8 @@ export default function Navbar({ profile }: NavbarProps) {
   ];
 
   const { name, github, linkedin } = profile || portfolioData.profile;
+  const safeGithub   = sanitizeUrl(github);
+  const safeLinkedin = sanitizeUrl(linkedin);
 
   return (
     <nav
@@ -89,7 +92,7 @@ export default function Navbar({ profile }: NavbarProps) {
         {/* Social Icons (Desktop) */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href={github}
+            href={safeGithub}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-850 hover:border-zinc-700 hover:text-white transition-all text-zinc-400"
@@ -97,7 +100,7 @@ export default function Navbar({ profile }: NavbarProps) {
             <Github className="w-4 h-4" />
           </a>
           <a
-            href={linkedin}
+            href={safeLinkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 rounded-lg bg-zinc-900/60 border border-zinc-850 hover:border-zinc-700 hover:text-white transition-all text-zinc-400"
@@ -133,7 +136,7 @@ export default function Navbar({ profile }: NavbarProps) {
           <div className="h-px bg-zinc-800 my-2" />
           <div className="flex gap-4">
             <a
-              href={github}
+              href={safeGithub}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-zinc-400 hover:text-white text-sm"
@@ -141,7 +144,7 @@ export default function Navbar({ profile }: NavbarProps) {
               <Github className="w-4 h-4" /> GitHub
             </a>
             <a
-              href={linkedin}
+              href={safeLinkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-zinc-400 hover:text-white text-sm"

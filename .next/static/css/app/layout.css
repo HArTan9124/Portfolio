@@ -445,6 +445,9 @@
   .inline-flex {
     display: inline-flex;
   }
+  .table {
+    display: table;
+  }
   .aspect-\[0\.5\] {
     aspect-ratio: 0.5;
   }
@@ -508,9 +511,6 @@
   .h-52 {
     height: calc(var(--spacing) * 52);
   }
-  .h-72 {
-    height: calc(var(--spacing) * 72);
-  }
   .h-80 {
     height: calc(var(--spacing) * 80);
   }
@@ -525,9 +525,6 @@
   }
   .h-\[350px\] {
     height: 350px;
-  }
-  .h-\[390px\] {
-    height: 390px;
   }
   .h-\[400px\] {
     height: 400px;

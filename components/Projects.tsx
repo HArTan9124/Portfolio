@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Github, ExternalLink, CheckCircle2, Zap, Clock, ChevronRight } from "lucide-react";
 import type { ProjectItem } from "@/data/portfolio";
 import IconMapper from "@/components/IconMapper";
+import { sanitizeUrl } from "@/lib/sanitizeUrl";
 
 // ─── Status badge config ────────────────────────────────────────────────────
 const STATUS_CONFIG = {
@@ -162,7 +163,7 @@ function ProjectCard({
         {/* ── Footer links ── */}
         <div className="flex items-center gap-3 pt-5 border-t border-zinc-800/60">
           <a
-            href={project.github}
+            href={sanitizeUrl(project.github)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/60 hover:bg-zinc-700/60 border border-zinc-700/50 hover:border-zinc-600/60 text-zinc-300 hover:text-white text-xs font-mono transition-all duration-200"
@@ -172,7 +173,7 @@ function ProjectCard({
           </a>
           {project.demo !== "#" ? (
             <a
-              href={project.demo}
+              href={sanitizeUrl(project.demo)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 text-purple-300 hover:text-purple-200 text-xs font-mono transition-all duration-200"
